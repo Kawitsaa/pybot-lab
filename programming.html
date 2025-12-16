@@ -805,9 +805,7 @@ for count in range(3):   # ทำซ้ำ 3 รอบ
       runAll();
 
       if(running) return;
-
       const raw = document.getElementById('code').value || "";
-
       // ✅ บังคับใช้ loop ในด่าน 4
       if(level === 4){
         const hasLoop = /for\s+\w+\s+in\s+range\(\s*\d+\s*\)\s*:/.test(raw);
@@ -817,6 +815,10 @@ for count in range(3):   # ทำซ้ำ 3 รอบ
             "ด่านที่ 4 \nกรุณาใช้ for ... in range(n): อย่างน้อย 1 ครั้ง\nตัวอย่าง:\nfor i in range(3):\n    pybot.straight(10)";
           return;
         }
+      }
+      queue = parse(raw);
+      if(queue.length===0) return;
+      runAll();
     });
 
     document.getElementById('step').addEventListener('click', ()=>{
