@@ -415,7 +415,7 @@ for count in range(3):   # ทำซ้ำ 3 รอบ
       1: { name:'ด่านที่ 1 — Basic Mission', start:{x:0,y:5,dir:1}, goal:{x:5,y:5}, obs:[] },
       2: { name:'ด่านที่ 2 — Progress Mission', start:{x:1,y:5,dir:0}, goal:{x:1,y:1}, obs:[ {x:1,y:4} ] },
       3: { name:'ด่านที่ 3 — Advanced Mission', start:{x:0,y:5,dir:1}, goal:{x:5,y:0}, obs:[ {x:2,y:4},{x:2,y:3},{x:3,y:3},{x:3,y:2} ] },
-      4: { name:'ด่านที่ 4 — Challenge Mission (Hard)', start:{x:0,y:5,dir:1}, goal:{x:5,y:0}, obs:[ {x:1,y:5},{x:1,y:4},{x:2,y:4},{x:2,y:3},{x:3,y:3},{x:3,y:2},{x:4,y:2},{x:4,y:1},{x:5,y:4},{x:5,y:3},{x:3,y:1} ] }
+      4: { name:'ด่านที่ 4 — Challenge Mission (Hard)', start:{x:0,y:5,dir:1}, goal:{x:5,y:0}, obs:[ {x:0,y:0},{x:1,y:0},{x:0,y:1},{x:1,y:1}, {x:2,y:5},{x:2,y:4}, {x:3,y:4},{x:3,y:3}, {x:4,y:3},{x:4,y:2}, {x:5,y:2},{x:5,y:1}, {x:2,y:2},{x:3,y:2},{x:2,y:1} ] }
     };
 
     function tileAt(x,y){
@@ -803,6 +803,20 @@ for count in range(3):   # ทำซ้ำ 3 รอบ
       queue = parse(document.getElementById('code').value);
       if(queue.length===0) return;
       runAll();
+
+      if(running) return;
+
+      const raw = document.getElementById('code').value || "";
+
+      // ✅ บังคับใช้ loop ในด่าน 4
+      if(level === 4){
+        const hasLoop = /for\s+\w+\s+in\s+range\(\s*\d+\s*\)\s*:/.test(raw);
+        if(!hasLoop){
+          setStatus('ด่านนี้ต้องใช้ loop');
+          document.getElementById('helpMsg').textContent =
+            "ด่านที่ 4 \nกรุณาใช้ for ... in range(n): อย่างน้อย 1 ครั้ง\nตัวอย่าง:\nfor i in range(3):\n    pybot.straight(10)";
+          return;
+        }
     });
 
     document.getElementById('step').addEventListener('click', ()=>{
