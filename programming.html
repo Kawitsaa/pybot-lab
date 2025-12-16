@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Programming • PyBot Lab</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500&display=swap');
+    *{box-sizing:border-box;font-family:"Mitr",system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans Thai",sans-serif}
+    :root{ --red:#E34B4B; --ink:#444; --muted:#f6f7f9; --border:#e7e7ea; --shadow:0 10px 25px rgba(0,0,0,.08),0 2px 8px rgba(0,0,0,.05); }
+    body{margin:0;background:#fff;color:var(--ink)}
+    b,strong,h1,h2,h3,h4,h5,h6{font-weight:400}
+
+    /* ===== TOPBAR (GitHub Pages) ===== */
+    .topbar{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--border);z-index:10}
+    .bar{display:flex;gap:12px;align-items:center;min-height:64px;padding:10px 0}
+    .container{width:min(1100px,92%);margin:0 auto}
+    .brand img{height:56px;width:auto;display:block}
+    @media (max-width:600px){ .brand img{height:44px} }
+    nav{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+    nav a{padding:8px 12px;border-radius:10px;text-decoration:none;color:#555;border:1px solid transparent}
+    nav a:hover{background:var(--muted)}
+    nav a.active{background:var(--muted);color:#222}
+    nav a.cta{background:var(--red);color:#fff}
+    nav a.cta.active{outline:2px solid rgba(227,75,75,.25)}
+
+    main{padding:20px 0 32px}
+    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+    @media (max-width:900px){ .grid{grid-template-columns:1fr} }
+    .card{border:1px solid var(--border);border-radius:14px;background:#fff;box-shadow:var(--shadow);padding:14px}
+
+    .board-wrap{padding:10px}
+    .board{position:relative;background:#fff;border-radius:16px;border:1px solid var(--border);overflow:hidden}
+    .grid-bg{display:grid;gap:8px;padding:8px}
+    .cell{aspect-ratio:1/1;border:1px solid var(--border);border-radius:12px;background-position:center;background-size:cover;background-repeat:no-repeat}
+    .cell.goal{outline:3px solid rgba(227,75,75,.35)}
+    .sprite{position:absolute;width:calc(100% / var(--n) * 1.10);height:auto; transform:translate(-50%,-50%);filter:drop-shadow(0 10px 20px rgba(0,0,0,.18))}
+    #fireworks{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
+
+    .hud{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:6px 10px;background:#fafafa;border:1px solid var(--border);border-radius:10px;margin:10px 0 0}
+    .chip{padding:6px 10px;background:#fff;border:1px solid var(--border);border-radius:999px}
+
+    .ctrl{display:grid;gap:10px}
+    .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    select,input,textarea,button{font:inherit}
+    textarea.code{width:100%;min-height:180px;border:1px solid var(--border);border-radius:12px;padding:10px;background:#fff}
+    .btn{border:1px solid var(--border);border-radius:12px;padding:10px 14px;cursor:pointer;background:#fff}
+    .btn.primary{background:var(--red);color:#fff;border-color:transparent}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+    .note{font-size:13px;color:#666}
+    .sep{height:1px;background:var(--border);margin:6px 0}
+    pre{margin:6px 0;}
+
+    /* ===== Fail overlay (ผิดหวัง) ===== */
+    .fail-overlay{
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      pointer-events:none;
+      opacity:0;
+      transition:opacity .25s ease;
+      background:rgba(0,0,0,.55);
+      z-index:20;
+    }
+    .fail-overlay.show{ opacity:1; }
+    .fail-box{
+      text-align:center;
+      transform:translateY(6px);
+      opacity:0;
+      transition:opacity .28s ease, transform .28s ease;
+    }
+    .fail-overlay.show .fail-box{
+      opacity:1;
+      transform:translateY(0);
+    }
+    .fail-box img{
+      width:min(220px,55vw);
+      height:auto;
+      filter:drop-shadow(0 16px 30px rgba(0,0,0,.35));
+    }
+    .fail-text{
+      margin-top:8px;
+      color:#fff;
+      font-size:14px;
+      opacity:.9;
+    }
+
+    /* ===== Helping From PyBot ===== */
+    .help-card{margin-top:14px; padding:16px;}
+    .help-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+    .help-title{font-size:18px}
+    .help-sub{font-size:13px;color:#666;margin-top:2px}
+
+    .help-wrap{
+      display:grid;
+      grid-template-columns:1fr 220px;
+      gap:14px;
+      align-items:end;
+    }
+    @media (max-width:640px){
+      .help-wrap{grid-template-columns:1fr; align-items:start;}
+    }
+
+    .bubble{
+      position:relative;
+      background:#fff7f7;
+      border:1px solid #f1c6c6;
+      border-radius:16px;
+      padding:14px 14px 12px;
+      box-shadow:0 10px 20px rgba(0,0,0,.06);
+      min-height:120px;
+    }
+    .bubble:after{
+      content:"";
+      position:absolute;
+      right:-10px;
+      bottom:18px;
+      width:18px;height:18px;
+      background:#fff7f7;
+      border-right:1px solid #f1c6c6;
+      border-bottom:1px solid #f1c6c6;
+      transform:rotate(-45deg);
+      border-bottom-right-radius:6px;
+    }
+    @media (max-width:640px){
+      .bubble:after{display:none;}
+    }
+
+    .help-msg{color:#444; line-height:1.65; font-size:14px; white-space:pre-wrap;}
+    .help-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .mini{padding:8px 10px;border-radius:12px;border:1px solid var(--border);background:#fff;cursor:pointer}
+    .mini.primary{background:var(--red);color:#fff;border-color:transparent}
+    .mini:active{transform:translateY(1px)}
+
+    .bot{display:flex;justify-content:flex-end;align-items:flex-end;}
+    .bot img{
+      width:220px;max-width:100%;height:auto;
+      filter:drop-shadow(0 12px 24px rgba(0,0,0,.16));
+    }
+  </style>
+</head>
+
+<body>
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="container">
+      <div class="bar">
+        <a class="brand" href="./index.html" aria-label="Home">
+          <img src="https://github.com/Kawitsaa/pybot-lab/blob/main/Logo%20PyBot%20Lab.jpg?raw=true" alt="PyBot Lab Logo">
+        </a>
+        <nav>
+          <a href="./index.html" class="link" data-page="index">Home</a>
+          <a href="./lessons.html" class="link" data-page="lessons">Lessons</a>
+          <a href="./programming.html" class="link cta" data-page="programming">Programming</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="grid">
+      <!-- กระดาน (Simulator) -->
+      <section class="card">
+        <div class="board-wrap">
+          <div id="board" class="board">
+            <div class="grid-bg" id="gridBg"></div>
+
+            <!-- ✅ เอฟเฟคพลุ -->
+            <canvas id="fireworks"></canvas>
+
+            <!-- ✅ เอฟเฟคผิดหวัง -->
+            <div id="failOverlay" class="fail-overlay" aria-hidden="true">
+              <div class="fail-box">
+                <img src="https://github.com/Kawitsaa/pybot-lab/blob/main/sad.png?raw=true" alt="sad">
+                <div class="fail-text">โอ๊ย… ชนแล้ว 😭 แก้โค้ดแล้วกด “รีเซ็ต” เพื่อเริ่มใหม่</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hud">
+            <div class="chip">มุม (°): <span id="heading">0</span></div>
+            <div class="chip">ตำแหน่ง: <span id="posName">(0.0, 0.0)</span></div>
+            <div class="chip" id="status">พร้อม</div>
+          </div>
+        </div>
+
+        <!-- ✅ Helping From PyBot -->
+        <section class="card help-card">
+          <div class="help-head">
+            <div>
+              <div class="help-title">Helping From PyBot</div>
+              <div class="help-sub">น้องพายจะดูโค้ดที่พิมพ์ แล้วบอกว่าชนเพราะอะไร + ควรแก้ยังไง (อิงจากโค้ดของนักเรียน)</div>
+            </div>
+          </div>
+
+          <div class="help-wrap">
+            <div class="bubble">
+              <div id="helpMsg" class="help-msg">สวัสดีจ้า 😊
+กด “ตรวจโค้ดของฉัน” แล้วฉันจะช่วยดูว่าโค้ดมีแนวโน้มชนตรงไหน และควรแก้ยังไงต่อ</div>
+
+              <div class="help-actions">
+                <button class="mini" id="helpCheck">ตรวจโค้ดของฉัน</button>
+                <button class="mini" id="helpHint">ขอ Hint ของด่านนี้</button>
+                <button class="mini primary" id="helpClear">ล้างคำปรึกษา</button>
+              </div>
+            </div>
+
+            <div class="bot">
+              <img src="https://github.com/Kawitsaa/pybot-lab/blob/main/Call%20center.png?raw=true" alt="PyBot Help">
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- ส่วนควบคุม -->
+      <aside class="card ctrl">
+        <div class="row">
+          <label>เลือกด่าน</label>
+          <select id="level">
+            <option value="1">ด่านที่ 1 — Basic Mission</option>
+            <option value="2">ด่านที่ 2 — Progress Mission</option>
+            <option value="3">ด่านที่ 3 — Advanced Mission</option>
+            <option value="4">ด่านที่ 4 — Challenge Mission</option>
+          </select>
+          <button class="btn" id="resetLevel">เริ่มด่านใหม่</button>
+        </div>
+
+        <div class="note">
+          เขียนคำสั่งแบบ Python จริง (เหมือนใน mBlock):<br>
+          เดินตรง: <code>pybot.straight(30)</code> (เซนติเมตร, <b>10 cm ≈ 1 ช่อง</b>)<br>
+          เลี้ยว: <code>pybot.turn(-90)</code> (ซ้าย), <code>pybot.turn(90)</code> (ขวา)<br>
+          วนซ้ำ: <code>for count in range(3):</code> แล้วเว้นวรรคบรรทัดถัดไป
+        </div>
+
+        <textarea id="code" class="code" placeholder="พิมพ์โค้ดของคุณที่นี่…"></textarea>
+
+        <div class="row">
+          <button class="btn primary" id="run">Run</button>
+          <button class="btn" id="step">Step</button>
+          <button class="btn" id="stop">หยุด</button>
+          <button class="btn" id="reset">รีเซ็ต</button>
+          <label>ความเร็ว <input id="speed" type="range" min="20" max="600" value="220"></label>
+        </div>
+
+        <div class="sep"></div>
+        <div class="note">สนาม 6×6 • 0°=ขึ้น, 90°=ขวา, 180°=ลง, 270°=ซ้าย • ชนขอบ/ชนสิ่งกีดขวางจะหยุด</div>
+
+        <div style="margin-top:16px; border-radius:14px; padding:16px; border:1px solid var(--border); background:#f9fafb;">
+          <h3 style="margin-bottom:10px; font-weight:400;">คำสั่ง Python สำหรับควบคุม PyBot</h3>
+
+          <div style="font-size:14px; color:#444; line-height:1.6;">
+            <b>1) เดินตรง / ถอยหลัง</b>
+            <pre style="background:#f7f7f7; padding:10px; border-radius:8px; overflow:auto;">
+pybot.straight(30)      # เดินหน้า 30 cm
+pybot.straight(-30)     # ถอยหลัง 30 cm
+            </pre>
+
+            <b>2) เลี้ยวซ้าย / เลี้ยวขวา</b>
+            <pre style="background:#f7f7f7; padding:10px; border-radius:8px; overflow:auto;">
+pybot.turn(-90)         # เลี้ยวซ้าย 90°
+pybot.turn(90)          # เลี้ยวขวา 90°
+            </pre>
+
+            <b>3) วนซ้ำ (Loop)</b>
+            <pre style="background:#f7f7f7; padding:10px; border-radius:8px; overflow:auto;">
+for count in range(3):   # ทำซ้ำ 3 รอบ
+    pybot.straight(20)
+            </pre>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    // ✅ Active menu auto
+    (function(){
+      const path = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+      const page =
+        path.includes('lessons') ? 'lessons' :
+        path.includes('programming') ? 'programming' :
+        'index';
+      document.querySelectorAll('nav .link').forEach(a=>{
+        a.classList.toggle('active', a.dataset.page === page);
+      });
+    })();
+
+    /* ======== CONFIG / ASSETS ======== */
+    const N = 6;
+    const CM_PER_CELL = 10; // 10 cm = 1 ช่องบนกระดาน
+    const IMG_FRONT = "https://github.com/Kawitsaa/pybot-lab/blob/main/S-B.png?raw=true";
+    const IMG_BACK  = "https://github.com/Kawitsaa/pybot-lab/blob/main/S-F.png?raw=true";
+    const IMG_RIGHT = "https://github.com/Kawitsaa/pybot-lab/blob/main/S-R.png?raw=true";
+    const IMG_LEFT  = "https://github.com/Kawitsaa/pybot-lab/blob/main/S-L.png?raw=true";
+    const TILE = {
+      C1: "https://github.com/Kawitsaa/pybot-lab/blob/main/C1.jpg?raw=true",
+      C2: "https://github.com/Kawitsaa/pybot-lab/blob/main/C2.jpg?raw=true",
+      C3: "https://github.com/Kawitsaa/pybot-lab/blob/main/C3.jpg?raw=true",
+      N1: "https://github.com/Kawitsaa/pybot-lab/blob/main/N1.jpg?raw=true",
+      N2: "https://github.com/Kawitsaa/pybot-lab/blob/main/N2.jpg?raw=true",
+      N3: "https://github.com/Kawitsaa/pybot-lab/blob/main/N3.jpg?raw=true",
+      N4: "https://github.com/Kawitsaa/pybot-lab/blob/main/N4.jpg?raw=true",
+    };
+    const NOT_TOUCH = ['N1','N2','N3','N4'];
+
+    /* ======== STATE ======== */
+    const board = document.getElementById('board');
+    const gridBg = document.getElementById('gridBg');
+    const failOverlay = document.getElementById('failOverlay');
+
+    let sprite;
+    let heading = 0;
+    let pos = { x: 0.0, y: 0.0 };
+    let running = false;
+    let queue = [];
+    let level = 1;
+
+    let lastStop = null;
+
+    function showFailOverlay(){
+      if(!failOverlay) return;
+      failOverlay.classList.add('show');
+    }
+
+    /* ======== LEVELS ======== */
+    const LEVELS = {
+      1: { name:'ด่านที่ 1 — Basic Mission', start:{x:0,y:5,dir:1}, goal:{x:5,y:5}, obs:[] },
+      2: { name:'ด่านที่ 2 — Progress Mission', start:{x:1,y:5,dir:0}, goal:{x:1,y:1}, obs:[ {x:1,y:4} ] },
+      3: { name:'ด่านที่ 3 — Advanced Mission', start:{x:0,y:5,dir:1}, goal:{x:5,y:0}, obs:[ {x:2,y:4},{x:2,y:3},{x:3,y:3},{x:3,y:2} ] },
+      4: { name:'ด่านที่ 4 — Challenge Mission', start:{x:0,y:5,dir:1}, goal:{x:5,y:0}, obs:[ {x:2,y:5},{x:3,y:4},{x:4,y:3},{x:5,y:2},{x:4,y:1} ] }
+    };
+
+    function tileAt(x,y){
+      const g = LEVELS[level].goal;
+      if (g && g.x===x && g.y===y) return 'C3';
+      if (LEVELS[level].obs && LEVELS[level].obs.some(o=>o.x===x && o.y===y)) {
+        const Ns = ['N1','N2','N3','N4'];
+        return Ns[(x + 2*y) % Ns.length];
+      }
+      return ((x + y) % 2 === 0) ? 'C1' : 'C2';
+    }
+
+    function buildGrid(){
+      gridBg.innerHTML = '';
+      gridBg.style.setProperty('--n', N);
+      board.style.setProperty('--n', N);
+      gridBg.style.gridTemplateColumns = `repeat(${N},1fr)`;
+      for(let y=0;y<N;y++){
+        for(let x=0;x<N;x++){
+          const c = document.createElement('div');
+          c.className = 'cell';
+          gridBg.appendChild(c);
+        }
+      }
+      if(!sprite){
+        sprite = document.createElement('img');
+        sprite.className = 'sprite';
+        sprite.alt = 'Py';
+        board.appendChild(sprite);
+      }
+      paintCells();
+      updateSpriteImage();
+      paintSprite();
+    }
+
+    function getCellEl(x,y){ return gridBg.children[y*N + x]; }
+
+    function paintCells(){
+      for(let y=0;y<N;y++){
+        for(let x=0;x<N;x++){
+          const el = getCellEl(x,y);
+          const code = tileAt(x,y);
+          el.style.backgroundImage = `url('${TILE[code]}')`;
+          el.classList.toggle('goal', code==='C3');
+          el.dataset.blocked = NOT_TOUCH.includes(code) ? '1' : '0';
+        }
+      }
+    }
+
+    function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+    function normDeg(d){ d = d % 360; if(d<0) d+=360; return d; }
+    function roundCell(v){ return Math.round(v); }
+
+    function updateSpriteImage(){
+      const d = normDeg(heading);
+      if(d >= 315 || d < 45){ sprite.src = IMG_FRONT; }
+      else if(d >= 45 && d < 135){ sprite.src = IMG_RIGHT; }
+      else if(d >= 135 && d < 225){ sprite.src = IMG_BACK; }
+      else { sprite.src = IMG_LEFT; }
+    }
+
+    function paintSprite(){
+      const rect = board.getBoundingClientRect();
+      const inner = gridBg.getBoundingClientRect();
+      const cellW = inner.width / N;
+      const cellH = inner.height / N;
+      const left = inner.left - rect.left + (pos.x + 0.5) * cellW;
+      const top = inner.top - rect.top + (pos.y + 0.5) * cellH;
+      sprite.style.left = left + 'px';
+      sprite.style.top = top + 'px';
+      document.getElementById('heading').textContent = Math.round(normDeg(heading));
+      document.getElementById('posName').textContent = `(${pos.x.toFixed(1)}, ${pos.y.toFixed(1)})`;
+    }
+    window.addEventListener('resize', paintSprite);
+
+    function setStatus(txt){ const s=document.getElementById('status'); if(s) s.textContent = txt; }
+    function isBlockedCell(x,y){ const el = getCellEl(x,y); return el ? el.dataset.blocked === '1' : true; }
+    function inBounds(x,y){ return (x>=0 && y>=0 && x<=N-1 && y<=N-1); }
+    function currentSpeed(){ return +document.getElementById('speed').value; }
+    function delay(ms){ return new Promise(r=>setTimeout(r, ms)); }
+
+    /* ======== MOTION ======== */
+    async function moveForward(distCells, meta){
+      const steps = Math.max(1, Math.ceil(Math.abs(distCells) * 12));
+      const sign = distCells >= 0 ? 1 : -1;
+
+      for(let i=0;i<steps;i++){
+        const step = sign * (Math.abs(distCells)/steps);
+        const rad = heading * Math.PI/180;
+        const dx = Math.sin(rad) * step;
+        const dy = -Math.cos(rad) * step;
+        let nx = pos.x + dx;
+        let ny = pos.y + dy;
+
+        if(!inBounds(nx, ny)){
+          nx = clamp(nx, 0, N-1); ny = clamp(ny, 0, N-1);
+          pos.x = nx; pos.y = ny; paintSprite();
+
+          setStatus('ชนสิ่งกีดขวาง');
+          running=false;
+
+          lastStop = { type:'edge', at:{x:roundCell(nx), y:roundCell(ny)}, msg:'ชนขอบสนาม', cmdIndex: meta?.cmdIndex ?? null, cmdRaw: meta?.cmdRaw ?? null };
+          showFailOverlay();
+          updateHelpFromLastStop();
+          return;
+        }
+
+        const cx = roundCell(pos.x), cy = roundCell(pos.y);
+        const nxCell = roundCell(nx), nyCell = roundCell(ny);
+
+        if((nxCell !== cx || nyCell !== cy) && isBlockedCell(nxCell, nyCell)){
+          setStatus('ชนสิ่งกีดขวาง');
+          running=false;
+
+          lastStop = { type:'obstacle', at:{x:nxCell, y:nyCell}, msg:'ชนสิ่งกีดขวาง', cmdIndex: meta?.cmdIndex ?? null, cmdRaw: meta?.cmdRaw ?? null };
+          showFailOverlay();
+          updateHelpFromLastStop();
+          return;
+        }
+
+        pos.x = nx; pos.y = ny; paintSprite();
+        await delay(currentSpeed());
+        if(!running) return;
+      }
+    }
+
+    function turnLeft(deg){ heading = normDeg(heading - (deg ?? 90)); updateSpriteImage(); paintSprite(); }
+    function turnRight(deg){ heading = normDeg(heading + (deg ?? 90)); updateSpriteImage(); paintSprite(); }
+
+    /* ======== LOOPS ======== */
+    function expandLoops(code){
+      const lines = code.split('\n');
+      const out = [];
+      for(let i=0; i<lines.length; i++){
+        let line = lines[i];
+        let trimmed = line.replace(/#.*$/,'').trim();
+        if(!trimmed) continue;
+
+        const mFor = trimmed.match(/^for\s+[A-Za-z_]\w*\s+in\s+range\((\d+)\)\s*:/);
+        if(mFor){
+          const times = parseInt(mFor[1], 10) || 0;
+          const bodyLines = [];
+          i++;
+          while(i < lines.length){
+            let next = lines[i];
+            if(/^\s+/.test(next)){
+              bodyLines.push(next.replace(/^\s+/, ''));
+              i++;
+            }else{
+              i--;
+              break;
+            }
+          }
+          const bodyCode = bodyLines.join('\n');
+          for(let k=0;k<times;k++) out.push(bodyCode);
+        }else{
+          out.push(line);
+        }
+      }
+      return out.join('\n');
+    }
+
+    /* ======== PARSER ======== */
+    function tokenize(line){
+      line = line.replace(/#.*$/,'').trim();
+      if(!line) return null;
+      if(/^import\s+/.test(line) || /^from\s+/.test(line)) return null;
+
+      let mMethod = line.match(/^([A-Za-z_]\w*)\s*\.\s*([A-Za-z_]\w*)\s*\((.*)\)\s*$/);
+      if(mMethod){
+        const obj = mMethod[1].toLowerCase();
+        const method = mMethod[2].toLowerCase();
+        const argStr = mMethod[3].trim();
+        const args = argStr ? argStr.split(',').map(s=>parseFloat(s.trim())) : [];
+        return { name: obj + '.' + method, args };
+      }
+
+      const parts = line.split(/[,\s]+/).filter(Boolean);
+      if(parts.length === 0) return null;
+      const name = (parts.shift()||'').toLowerCase();
+      const args = parts.map(x=>parseFloat(x));
+      return {name, args};
+    }
+
+    function parse(code){
+      const expanded = expandLoops(code);
+      const cmds = [];
+      for(let raw of expanded.split('\n')){
+        const t = tokenize(raw);
+        if(!t) continue;
+        cmds.push({ t:'call', name:t.name, args:t.args, raw:raw.trim() });
+      }
+      if(cmds.length===0){ setStatus('ไม่พบคำสั่ง'); }
+      return cmds;
+    }
+
+    /* ======== FIREWORKS ======== */
+    function celebrate(durationMs=2000){
+      const canvas=document.getElementById('fireworks');
+      const ctx=canvas.getContext('2d');
+      function resize(){ canvas.width=canvas.clientWidth; canvas.height=canvas.clientHeight; }
+      resize();
+      const particles=[]; const colors=['#ffcc00','#ff6666','#66ccff','#66ff99','#ff99ff','#ffffff'];
+      function burst(){
+        const cx=Math.random()*canvas.width, cy=Math.random()*canvas.height*0.5 + canvas.height*0.1;
+        const count=60+Math.floor(Math.random()*30);
+        for(let i=0;i<count;i++){
+          const angle=Math.random()*Math.PI*2; const speed=1+Math.random()*3.0;
+          particles.push({x:cx,y:cy, vx:Math.cos(angle)*speed, vy:Math.sin(angle)*speed, life:50+Math.random()*40, color:colors[Math.floor(Math.random()*colors.length)]});
+        }
+      }
+      let raf, t0=performance.now();
+      function tick(t){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        if(Math.random()<0.07) burst();
+        for(let i=particles.length-1;i>=0;i--){
+          const p=particles[i];
+          p.x+=p.vx; p.y+=p.vy; p.vy+=0.02; p.life-=1;
+          if(p.life<=0){ particles.splice(i,1); continue; }
+          ctx.globalAlpha=Math.max(0, p.life/90);
+          ctx.beginPath(); ctx.arc(p.x,p.y,2,0,Math.PI*2); ctx.fillStyle=p.color; ctx.fill();
+        }
+        if(t - t0 < durationMs){ raf=requestAnimationFrame(tick); }
+        else { cancelAnimationFrame(raf); ctx.clearRect(0,0,canvas.width,canvas.height); }
+      }
+      window.addEventListener('resize', resize, {once:true});
+      raf=requestAnimationFrame(tick);
+    }
+
+    /* ======== EXECUTOR ======== */
+    async function execOne(c, cmdIndex){
+      if(c.t!=='call') return false;
+      const n = c.name;
+      const a = c.args || [];
+      const meta = { cmdIndex, cmdRaw: c.raw };
+
+      if(n === 'pybot.straight'){
+        const cm = a[0] ?? 0;
+        const distCells = cm / CM_PER_CELL;
+        await moveForward(distCells, meta);
+        return true;
+      }
+      if(n === 'pybot.turn'){
+        const deg = a[0] ?? 0;
+        if(deg < 0) turnLeft(Math.abs(deg));
+        else        turnRight(deg);
+        return true;
+      }
+
+      setStatus('คำสั่งไม่รู้จัก');
+      return false;
+    }
+
+    async function runAll(){
+      if(running) return;
+      lastStop = null;
+      running = true;
+      setStatus('กำลังรัน…');
+
+      for(let i=0;i<queue.length;i++){
+        if(!running) break;
+        await execOne(queue[i], i);
+      }
+
+      running = false;
+      if(lastStop) return;
+
+      const g = LEVELS[level].goal;
+      if(Math.round(pos.x)===g.x && Math.round(pos.y)===g.y){
+        setStatus('ผ่านด่าน!');
+        document.getElementById('helpMsg').textContent =
+          "เย้! ผ่านด่านแล้ว 🎉\nถ้าจะทำให้โค้ดสั้นลง ลองใช้ for loop หรือปรับระยะทีละ 10 cm ได้เลย";
+        celebrate(2000);
+      } else {
+        setStatus('เสร็จสิ้น');
+      }
+    }
+
+    function stepOnce(){
+      if(running) return;
+      if(queue.length===0) return;
+      const c = queue.shift();
+      execOne(c, 0);
+    }
+
+    /* ======== HINTS ======== */
+    function setHint(n){
+      const el = document.getElementById('code');
+      if(n===1){
+        el.value =
+`# โค้ดนี้เป็นเพียงตัวอย่างเท่านั้น ไม่ใช้โค้ดที่ถูกต้องทั้งหมด
+# ด่าน 1: ไปให้ถึงเป้าหมาย
+pybot.straight(50)`;
+      }
+      if(n===2){
+        el.value =
+`# โค้ดนี้เป็นเพียงตัวอย่างเท่านั้น ไม่ใช้โค้ดที่ถูกต้องทั้งหมด
+# ด่าน 2: เดินหน้าแล้วเลี้ยวซ้าย
+pybot.straight(30)
+pybot.turn(-90)
+pybot.straight(40)`;
+      }
+      if(n===3){
+        el.value =
+`# โค้ดนี้เป็นเพียงตัวอย่างเท่านั้น ไม่ใช้โค้ดที่ถูกต้องทั้งหมด
+# ด่าน 3: ตัวอย่างการเลี่ยงสิ่งกีดขวาง
+pybot.straight(20)
+pybot.turn(90)
+pybot.straight(20)
+pybot.turn(-90)
+pybot.straight(40)`;
+      }
+      if(n===4){
+        el.value =
+`# โค้ดนี้เป็นเพียงตัวอย่างเท่านั้น ไม่ใช้โค้ดที่ถูกต้องทั้งหมด
+# ด่าน 4: ใช้วนซ้ำช่วยให้โค้ดสั้นลง
+for count in range(3):
+    pybot.straight(20)
+    pybot.turn(90)`;
+      }
+    }
+
+    function loadLevel(n){
+      level = n;
+      const st = LEVELS[level].start;
+      heading = (st.dir ?? 0) * 90;
+      pos = { x: st.x, y: st.y };
+      paintCells(); updateSpriteImage(); paintSprite();
+      setStatus('พร้อม');
+      setHint(n);
+      document.getElementById('helpMsg').textContent =
+        "กด “ตรวจโค้ดของฉัน” ได้เลยนะ 😊\nฉันจะดูจากโค้ดที่พิมพ์ว่ามีแนวโน้มชนตรงไหน และควรแก้ยังไง";
+      if(failOverlay) failOverlay.classList.remove('show');
+      lastStop = null;
+    }
+
+    /* ======== วิเคราะห์โค้ดเพื่อให้คำแนะนำ ======== */
+    function simulateFromCode(rawCode){
+      const code = expandLoops(rawCode || "");
+      const cmds = [];
+      const lines = code.split('\n');
+      for(let i=0;i<lines.length;i++){
+        const t = tokenize(lines[i]);
+        if(!t) continue;
+        cmds.push({ name:t.name, args:t.args || [], raw:lines[i].trim(), idx:i+1 });
+      }
+
+      const st = LEVELS[level].start;
+      let h = (st.dir ?? 0) * 90;
+      let p = { x: st.x * 1.0, y: st.y * 1.0 };
+
+      function inB(x,y){ return (x>=0 && y>=0 && x<=N-1 && y<=N-1); }
+      function rCell(v){ return Math.round(v); }
+      function blocked(x,y){
+        if(!inB(x,y)) return true;
+        const g = LEVELS[level].goal;
+        if(g && g.x===x && g.y===y) return false;
+        return (LEVELS[level].obs || []).some(o=>o.x===x && o.y===y);
+      }
+      function norm(d){ d%=360; if(d<0) d+=360; return d; }
+
+      for(let ci=0; ci<cmds.length; ci++){
+        const c = cmds[ci];
+        if(c.name === 'pybot.turn'){
+          const deg = c.args[0] ?? 0;
+          h = norm(h + deg);
+          continue;
+        }
+        if(c.name === 'pybot.straight'){
+          const cm = c.args[0] ?? 0;
+          const distCells = cm / CM_PER_CELL;
+          const steps = Math.max(1, Math.ceil(Math.abs(distCells) * 12));
+          const sign = distCells >= 0 ? 1 : -1;
+
+          for(let i=0;i<steps;i++){
+            const step = sign * (Math.abs(distCells)/steps);
+            const rad = h * Math.PI/180;
+            const dx = Math.sin(rad) * step;
+            const dy = -Math.cos(rad) * step;
+            const nx = p.x + dx;
+            const ny = p.y + dy;
+
+            if(!inB(nx, ny)){
+              return { ok:false, type:'edge', at:{x:rCell(Math.max(0, Math.min(N-1, nx))), y:rCell(Math.max(0, Math.min(N-1, ny)))}, cmd:c };
+            }
+
+            const cx = rCell(p.x), cy = rCell(p.y);
+            const nxC = rCell(nx), nyC = rCell(ny);
+            if((nxC!==cx || nyC!==cy) && blocked(nxC, nyC)){
+              return { ok:false, type:'obstacle', at:{x:nxC, y:nyC}, cmd:c };
+            }
+            p.x = nx; p.y = ny;
+          }
+        }
+      }
+
+      const g = LEVELS[level].goal;
+      const reached = (Math.round(p.x)===g.x && Math.round(p.y)===g.y);
+      return { ok:true, reached };
+    }
+
+    function adviceFromSimulation(sim){
+      if(sim.ok && sim.reached){
+        return "โค้ดนี้ “มีแนวโน้มผ่านด่าน” ✅\nถ้าในเกมยังไม่ผ่าน ให้ปรับระยะทีละ 10 cm (1 ช่อง) แล้วลองใหม่";
+      }
+      if(sim.ok && !sim.reached){
+        return "โค้ดรันได้ แต่ยัง “ไม่ถึงเป้าหมาย” 😊\nลองเพิ่ม/ลดระยะทีละ 10 cm หรือเพิ่มการเลี้ยว (pybot.turn) แล้วตรวจอีกครั้ง";
+      }
+
+      const where = `(${sim.at.x}, ${sim.at.y})`;
+      const cmdLine = sim.cmd?.idx ? `บรรทัดที่ ${sim.cmd.idx}` : "บรรทัดหนึ่ง";
+      const raw = sim.cmd?.raw ? `\nคำสั่งที่ทำให้ชน: ${sim.cmd.raw}` : "";
+
+      if(sim.type === 'edge'){
+        return `ชนสิ่งกีดขวางเพราะ “เดินเลยขอบสนาม” ❌\nชนที่ตำแหน่งประมาณ ${where}\n${cmdLine}${raw}\n\nวิธีแก้:\n1) ลดระยะใน pybot.straight(...) ลงทีละ 10 cm\n2) หรือใส่ pybot.turn(...) เพื่อเปลี่ยนทิศก่อนเดินต่อ\n3) แนะนำให้กด Step เพื่อดูช่วงที่เริ่มใกล้ขอบ`;
+      }
+      return `ชนสิ่งกีดขวางเพราะ “ชนสิ่งกีดขวาง” ❌\nชนที่ช่อง ${where}\n${cmdLine}${raw}\n\nวิธีแก้:\n1) ก่อนถึงจุดชน ให้เลี้ยวหลบ (pybot.turn) แล้วค่อยเดินต่อ\n2) หรือปรับระยะ pybot.straight(...) ให้สั้นลงทีละ 10 cm\n3) ลอง Run แบบทีละขั้น (Step) เพื่อดูว่าชนตรงไหน`;
+    }
+
+    function updateHelpFromLastStop(){
+      const sim = simulateFromCode(document.getElementById('code').value || "");
+      document.getElementById('helpMsg').textContent = adviceFromSimulation(sim);
+    }
+
+    /* ======== EVENTS ======== */
+    document.getElementById('run').addEventListener('click', ()=>{
+      if(running) return;
+      queue = parse(document.getElementById('code').value);
+      if(queue.length===0) return;
+      runAll();
+    });
+
+    document.getElementById('step').addEventListener('click', ()=>{
+      if(running) return;
+      if(queue.length===0) queue = parse(document.getElementById('code').value);
+      if(queue.length===0) return;
+      stepOnce();
+    });
+
+    document.getElementById('stop').addEventListener('click', ()=>{
+      running=false; queue=[]; setStatus('หยุดแล้ว');
+    });
+
+    document.getElementById('reset').addEventListener('click', ()=>{
+      running=false; queue=[]; lastStop=null;
+      const st = LEVELS[level].start;
+      heading = (st.dir ?? 0) * 90;
+      pos = { x: st.x, y: st.y };
+      updateSpriteImage(); paintSprite(); setStatus('พร้อม');
+      if(failOverlay) failOverlay.classList.remove('show');
+    });
+
+    document.getElementById('level').addEventListener('change', e=>{ loadLevel(+e.target.value); });
+    document.getElementById('resetLevel').addEventListener('click', ()=>{ loadLevel(level); });
+
+    (function init(){
+      buildGrid();
+      loadLevel(1);
+      document.getElementById('level').value = "1";
+    })();
+
+    document.getElementById('helpClear').addEventListener('click', ()=>{
+      document.getElementById('helpMsg').textContent = "พิมพ์โค้ดแล้วกด “ตรวจโค้ดของฉัน” ได้เลยนะ 😊";
+    });
+
+    document.getElementById('helpHint').addEventListener('click', ()=>{
+      setHint(level);
+      document.getElementById('helpMsg').textContent =
+        "ฉันใส่ตัวอย่างโค้ดของด่านนี้ให้แล้ว ✅\nจำไว้ว่า “โค้ดนี้เป็นเพียงตัวอย่าง” อาจต้องปรับระยะ/มุมให้พอดี\nแนะนำให้ปรับทีละ 10 cm แล้วลองใหม่";
+    });
+
+    document.getElementById('helpCheck').addEventListener('click', ()=>{
+      const sim = simulateFromCode(document.getElementById('code').value || "");
+      document.getElementById('helpMsg').textContent = adviceFromSimulation(sim);
+    });
+  </script>
+</body>
+</html>
