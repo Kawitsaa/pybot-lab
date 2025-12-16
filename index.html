@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home | PyBot Lab</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --ink:#1f2937;
+      --muted:#6b7280;
+      --border:#e7e7ea;
+      --red:#e45a51;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{
+      min-height:100vh;
+      font-family:"Mitr","Sarabun",system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans Thai",sans-serif;
+      background:linear-gradient(180deg,#ffffff 0%,#fff2f2 18%,#ffe6e6 55%,#ffdede 100%);
+      background-attachment:fixed;
+      color:var(--ink);
+      display:flex;
+      flex-direction:column;
+    }
+
+    /* ===== TOPBAR (GitHub Pages) ===== */
+    .topbar{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--border);z-index:10}
+    .container{width:min(1100px,92%);margin:0 auto}
+    .bar{display:flex;gap:12px;align-items:center;min-height:64px}
+    .brand .logo{height:56px;width:auto;display:block}
+    .nav{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+    .link{
+      padding:8px 12px;border-radius:10px;text-decoration:none;color:#555;border:1px solid transparent;
+    }
+    .link:hover{background:#f6f7f9}
+    .link.active{background:#f6f7f9;color:#222}
+    .link.cta{background:#E34B4B;color:#fff}
+    .link.cta.active{outline:2px solid rgba(227,75,75,.25)}
+    @media(max-width:600px){ .brand .logo{height:44px} }
+
+    main{
+      width:min(1100px,92%);
+      margin:0 auto;
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      gap:40px;
+      padding:40px 0 50px;
+    }
+
+    .card{
+      background:rgba(255,255,255,0.65);
+      border:1px solid rgba(255,255,255,0.4);
+      backdrop-filter:blur(6px);
+      border-radius:14px;
+      padding:16px;
+    }
+
+    /* ===== HERO ===== */
+    .hero{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:50px;
+    }
+
+    .welcome-box{
+      background:rgba(255,255,255,0.65);
+      border:1px solid rgba(255,255,255,0.4);
+      backdrop-filter:blur(6px);
+      border-radius:20px;
+      padding:40px 50px;
+      max-width:600px;
+    }
+
+    .welcome-box h1{
+      font-size:clamp(28px,4vw,42px);
+      font-weight:400;
+      margin-bottom:14px;
+    }
+
+    .welcome-box p{
+      color:#555;
+      line-height:1.6;
+    }
+
+    .mascot{
+      width:340px;
+      max-width:90%;
+      animation:bounce 3s ease-in-out infinite;
+      filter:drop-shadow(0 10px 20px rgba(0,0,0,.15));
+    }
+
+    @keyframes bounce{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(-10px)}
+    }
+
+    /* ===== GRID ===== */
+    .grid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:16px;
+    }
+
+    @media(max-width:900px){
+      .grid{grid-template-columns:1fr;}
+      .welcome-box{text-align:center;}
+    }
+
+    /* ===== QUIZ CARDS ===== */
+    .qgrid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      margin-top:14px;
+    }
+
+    @media(max-width:700px){
+      .qgrid{grid-template-columns:1fr;}
+    }
+
+    .qcard{
+      background:var(--red);
+      border-radius:12px;
+      padding:14px;
+      color:#fff;
+      text-decoration:none;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      transition:transform .12s ease, box-shadow .12s ease;
+    }
+
+    .qcard:hover{
+      transform:translateY(-2px);
+      box-shadow:0 6px 16px rgba(0,0,0,.15);
+    }
+
+    .qtitle{font-size:18px;font-weight:500;color:#fff;}
+    .qdesc{font-size:13px;font-weight:300;color:#fff;opacity:.9;}
+
+    /* ===== mBlock IMAGE ===== */
+    .mblock-wrap{grid-column:1 / -1;margin-top:6px;}
+    .mblock-link{display:block;border-radius:12px;overflow:hidden;}
+    .mblock-img{width:100%;display:block;}
+
+    /* ===== VIDEO + POSTER ===== */
+    .vwrap iframe{
+      width:100%;
+      height:220px;
+      border-radius:10px;
+      border:none;
+    }
+    .poster-small{
+      width:100%;
+      margin-top:14px;
+      display:block;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.6);
+    }
+
+    footer{
+      text-align:center;
+      padding:20px 0 30px;
+      font-size:14px;
+      color:#6b7280;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="container">
+      <div class="bar">
+        <a class="brand" href="./index.html" aria-label="Home">
+          <img class="logo" src="https://github.com/Kawitsaa/pybot-lab/blob/main/Logo%20PyBot%20Lab.jpg?raw=true" alt="PyBot Lab Logo">
+        </a>
+        <nav class="nav">
+          <a href="./index.html" class="link" data-page="index">Home</a>
+          <a href="./lessons.html" class="link" data-page="lessons">Lessons</a>
+          <a href="./programming.html" class="link cta" data-page="programming">Programming</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="welcome-box">
+        <h1>Welcome to PyBot Lab</h1>
+        <p>✦ พื้นที่เรียนรู้การเขียนโปรแกรมควบคุมหุ่นยนต์ด้วยภาษา Python สำหรับนักเรียน ม.5 ในรูปแบบ Blended Learning</p>
+      </div>
+      <img class="mascot" src="https://github.com/Kawitsaa/pybot-lab/blob/main/Mascot.png?raw=true" alt="Mascot">
+    </section>
+
+    <!-- CONTENT -->
+    <section>
+      <div class="grid">
+        <!-- ซ้าย -->
+        <section class="card">
+          <h2 style="font-weight:400;">สวัสดีนักเรียน !</h2>
+          <div style="color:#666; margin-bottom:12px;">พร้อมจะเรียนรู้ใน PyBot Lab หรือยัง ?</div>
+
+          <div class="qgrid">
+            <!-- ใส่ลิงก์ Google Form ของครีมใน href ได้เลย -->
+            <a class="qcard" href="#" target="_blank" rel="noopener">
+              <div class="qtitle">แบบทดสอบก่อนเรียน</div>
+              <div class="qdesc">ทำความเข้าใจก่อนเริ่มบทเรียน</div>
+            </a>
+
+            <a class="qcard" href="#" target="_blank" rel="noopener">
+              <div class="qtitle">แบบทดสอบหลังเรียน</div>
+              <div class="qdesc">ประเมินผลหลังเรียนครบ</div>
+            </a>
+
+            <div class="mblock-wrap">
+              <a class="mblock-link" href="https://mblock.cc/" target="_blank" rel="noopener">
+                <img class="mblock-img" src="https://github.com/Kawitsaa/pybot-lab/blob/main/Go%20to%20mBlock.png?raw=true" alt="Go to mBlock">
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- ขวา -->
+        <aside class="card">
+          <div style="margin-bottom:6px;">วิดีโอคู่มือการเรียน</div>
+
+          <div class="vwrap">
+            <!-- ✅ ใช้ embed เพื่อให้เล่นใน iframe ได้ -->
+            <iframe
+              src="https://www.youtube.com/embed/bGFqK789KFg"
+              title="คู่มือการเรียน PyBot Lab"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+          </div>
+
+          <img class="poster-small" src="https://github.com/Kawitsaa/pybot-lab/blob/main/P1.jpg?raw=true" alt="Poster">
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer>© PyBot Lab • 2025</footer>
+
+  <script>
+    // ✅ Active menu auto
+    (function(){
+      const path = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+      const page =
+        path.includes('lessons') ? 'lessons' :
+        path.includes('programming') ? 'programming' :
+        'index';
+      document.querySelectorAll('.nav .link').forEach(a=>{
+        a.classList.toggle('active', a.dataset.page === page);
+      });
+    })();
+  </script>
+</body>
+</html>
