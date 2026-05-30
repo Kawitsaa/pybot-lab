@@ -6,7 +6,7 @@
   <title>แบบทดสอบบทที่ 1 · Decomposition | PyBot Lab</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@200;300;400;500;600;700&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root{
       --red:#ff4b5f;
@@ -26,7 +26,7 @@
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family:"Mitr", system-ui, sans-serif;
+      font-family:"Prompt", system-ui, sans-serif;
       color:var(--ink);
       background:
         radial-gradient(circle at 10% 10%, rgba(255,209,102,.28), transparent 28%),
@@ -416,8 +416,6 @@
       .panel,.hero-card{padding:22px}
     }
   </style>
-</head>
-<body>
 
   <main>
     <section class="hero">
@@ -433,16 +431,6 @@
         <img src="https://github.com/Kawitsaa/pybot-lab/blob/main/test.png?raw=true" alt="PyBot กำลังทำแบบทดสอบ" />
       </div>
     </section>
-
-    <aside class="side-card">
-        <p class="summary-title">📌 คำแนะนำก่อนทำแบบทดสอบ</p>
-        <span class="pill">คะแนนเต็ม 6 คะแนน</span>
-        <ul class="side-list">
-          <li>• อ่านโจทย์ให้ครบก่อนเลือกคำตอบ</li>
-          <li>• เลือกคำตอบที่ถูกต้องที่สุดเพียง 1 ข้อ</li>
-          <li>• ระบบจะคำนวณคะแนนทันทีหลังส่ง</li>
-          <li>• โครงสร้างข้อมูลพร้อมส่งไปยัง PHP/MySQL ในอนาคต</li>
-        </ul>
 
     <section class="quiz-shell">
       <form id="quizForm" class="panel" autocomplete="off">
@@ -473,6 +461,7 @@
           </div>
         </div>
 
+
         <div id="questions"></div>
 
         <div class="actions">
@@ -481,7 +470,16 @@
         </div>
       </form>
 
-    
+      <aside class="side-card">
+        <p class="summary-title">📌 คำแนะนำก่อนทำแบบทดสอบ</p>
+        <span class="pill">คะแนนเต็ม 6 คะแนน</span>
+        <ul class="side-list">
+          <li>• อ่านโจทย์ให้ครบก่อนเลือกคำตอบ</li>
+          <li>• เลือกคำตอบที่ถูกต้องที่สุดเพียง 1 ข้อ</li>
+          <li>• ระบบจะคำนวณคะแนนทันทีหลังส่ง</li>
+          <li>• โครงสร้างข้อมูลพร้อมส่งไปยัง PHP/MySQL ในอนาคต</li>
+        </ul>
+
         <div id="scoreBox" class="score-box">
           <div>ผลคะแนนของคุณ</div>
           <div class="score-number"><span id="scoreText">0</span>/6</div>
@@ -572,10 +570,54 @@
         ],
         answer: 0
       }
+      {
+        id: "q7",
+        question: "เมื่อแยกปัญหาแล้ว ขั้นตอนต่อไปที่เหมาะสมคือข้อใด",
+        choices: [
+          "นำปัญหาย่อยไปวางลำดับขั้นตอนหรือออกแบบอัลกอริทึม",
+          "หยุดทำงานทันที",
+          "ลบข้อมูลโจทย์ทั้งหมด",
+          "เลือกคำตอบแบบสุ่ม"
+        ],
+        answer: 0
+      }
+      {
+        id: "q8",
+        question: "เมื่อแยกปัญหาแล้ว ขั้นตอนต่อไปที่เหมาะสมคือข้อใด",
+        choices: [
+          "นำปัญหาย่อยไปวางลำดับขั้นตอนหรือออกแบบอัลกอริทึม",
+          "หยุดทำงานทันที",
+          "ลบข้อมูลโจทย์ทั้งหมด",
+          "เลือกคำตอบแบบสุ่ม"
+        ],
+        answer: 0
+      }
+      {
+        id: "q9",
+        question: "เมื่อแยกปัญหาแล้ว ขั้นตอนต่อไปที่เหมาะสมคือข้อใด",
+        choices: [
+          "นำปัญหาย่อยไปวางลำดับขั้นตอนหรือออกแบบอัลกอริทึม",
+          "หยุดทำงานทันที",
+          "ลบข้อมูลโจทย์ทั้งหมด",
+          "เลือกคำตอบแบบสุ่ม"
+        ],
+        answer: 0
+      }
+      {
+        id: "q10",
+        question: "เมื่อแยกปัญหาแล้ว ขั้นตอนต่อไปที่เหมาะสมคือข้อใด",
+        choices: [
+          "นำปัญหาย่อยไปวางลำดับขั้นตอนหรือออกแบบอัลกอริทึม",
+          "หยุดทำงานทันที",
+          "ลบข้อมูลโจทย์ทั้งหมด",
+          "เลือกคำตอบแบบสุ่ม"
+        ],
+        answer: 0
+      }
     ];
 
-    <div class="progress-wrap" aria-live="polite">
-          <div class="progress-text"><span>ความคืบหน้า</span><span id="progressLabel">0/6 ข้อ</span></div>
+        <div class="progress-wrap" aria-live="polite">
+          <div class="progress-text"><span>ความคืบหน้า</span><span id="progressLabel">0/10 ข้อ</span></div>
           <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
         </div>
 
