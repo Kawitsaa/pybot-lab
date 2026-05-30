@@ -386,7 +386,9 @@
       position:fixed;
       left:50%;
       bottom:22px;
-      transform:translateX(-50%) translateY(120%);
+      transform:translateX(-50%) translateY(calc(100% + 60px));
+      opacity:0;
+      pointer-events:none;
       background:#25212a;
       color:#fff;
       padding:13px 18px;
@@ -397,8 +399,11 @@
       max-width:92vw;
       text-align:center;
     }
-
-    .toast.show{transform:translateX(-50%) translateY(0)}
+    
+    .toast.show{
+      transform:translateX(-50%) translateY(0);
+      opacity:1;
+    }
 
     footer{
       text-align:center;
