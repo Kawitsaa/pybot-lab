@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>แบบทดสอบบทที่ 1 · Decomposition | PyBot Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --red:#ff4b5f;
+      --red-dark:#d93249;
+      --pink:#fff1f4;
+      --cream:#fffaf1;
+      --yellow:#ffd166;
+      --ink:#25212a;
+      --muted:#706a78;
+      --card:#ffffff;
+      --line:#f0dbe1;
+      --green:#2fbf71;
+      --shadow:0 18px 45px rgba(217,50,73,.15);
+      --radius:28px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Prompt", system-ui, sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(255,209,102,.28), transparent 28%),
+        radial-gradient(circle at 88% 12%, rgba(255,75,95,.18), transparent 30%),
+        linear-gradient(135deg, #fff7fb 0%, #fffaf1 55%, #f8fbff 100%);
+      min-height:100vh;
+    }
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:10;
+      backdrop-filter: blur(16px);
+      background:rgba(255,255,255,.78);
+      border-bottom:1px solid rgba(240,219,225,.8);
+    }
+
+    .nav{
+      max-width:1120px;
+      margin:auto;
+      padding:16px 22px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:700;
+      color:var(--red-dark);
+      letter-spacing:.2px;
+    }
+
+    .brand-badge{
+      width:38px;
+      height:38px;
+      border-radius:14px;
+      background:linear-gradient(135deg, var(--red), #ff8aa0);
+      display:grid;
+      place-items:center;
+      color:white;
+      box-shadow:0 8px 18px rgba(217,50,73,.25);
+    }
+
+    .nav a{
+      color:var(--muted);
+      text-decoration:none;
+      font-size:.95rem;
+      margin-left:18px;
+      font-weight:500;
+    }
+
+    .nav a.active,
+    .nav a:hover{color:var(--red-dark)}
+
+    main{
+      max-width:1120px;
+      margin:0 auto;
+      padding:36px 22px 60px;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:28px;
+      align-items:center;
+      margin-top:10px;
+    }
+
+    .hero-card{
+      background:rgba(255,255,255,.86);
+      border:1px solid rgba(240,219,225,.95);
+      border-radius:var(--radius);
+      padding:36px;
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero-card:before{
+      content:"";
+      position:absolute;
+      width:220px;
+      height:220px;
+      right:-90px;
+      top:-90px;
+      border-radius:50%;
+      background:rgba(255,75,95,.12);
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      color:var(--red-dark);
+      background:var(--pink);
+      border:1px solid #ffd6df;
+      padding:8px 14px;
+      border-radius:999px;
+      font-size:.9rem;
+      font-weight:600;
+      margin-bottom:16px;
+    }
+
+    h1{
+      margin:0 0 14px;
+      font-size:clamp(2rem, 5vw, 3.35rem);
+      line-height:1.12;
+      color:var(--ink);
+    }
+
+    .lead{
+      margin:0;
+      color:var(--muted);
+      font-size:1.05rem;
+      line-height:1.8;
+      max-width:650px;
+    }
+
+    .hero-visual{
+      text-align:center;
+      position:relative;
+    }
+
+    .hero-visual img{
+      width:min(100%, 390px);
+      filter:drop-shadow(0 22px 26px rgba(37,33,42,.16));
+      animation:float 3.8s ease-in-out infinite;
+    }
+
+    @keyframes float{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(-10px)}
+    }
+
+    .quiz-shell{
+      display:grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap:24px;
+      margin-top:28px;
+      align-items:start;
+    }
+
+    .panel,
+    .side-card{
+      background:rgba(255,255,255,.9);
+      border:1px solid rgba(240,219,225,.95);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+
+    .panel{padding:28px}
+    .side-card{padding:22px; position:sticky; top:88px}
+
+    .student-grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:14px;
+      margin-bottom:22px;
+    }
+
+    label.field-label{
+      display:block;
+      font-size:.86rem;
+      color:var(--muted);
+      margin-bottom:7px;
+      font-weight:500;
+    }
+
+    input[type="text"], select{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px 14px;
+      font:inherit;
+      outline:none;
+      background:#fff;
+      transition:.2s;
+    }
+
+    input[type="text"]:focus, select:focus{
+      border-color:#ff9bad;
+      box-shadow:0 0 0 4px rgba(255,75,95,.1);
+    }
+
+    .progress-wrap{
+      margin:4px 0 24px;
+    }
+
+    .progress-text{
+      display:flex;
+      justify-content:space-between;
+      color:var(--muted);
+      font-size:.9rem;
+      margin-bottom:8px;
+    }
+
+    .progress-bar{
+      height:11px;
+      background:#f7e7eb;
+      border-radius:999px;
+      overflow:hidden;
+    }
+
+    .progress-fill{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg, var(--red), var(--yellow));
+      border-radius:999px;
+      transition:.25s;
+    }
+
+    .question{
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:22px;
+      margin-bottom:16px;
+      background:linear-gradient(180deg, #ffffff 0%, #fffafb 100%);
+    }
+
+    .q-head{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      margin-bottom:14px;
+    }
+
+    .q-no{
+      flex:0 0 auto;
+      width:38px;
+      height:38px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      color:white;
+      background:var(--red);
+      font-weight:700;
+    }
+
+    .q-title{
+      font-weight:600;
+      line-height:1.65;
+    }
+
+    .choice{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      border:1px solid #f0e2e6;
+      background:#fff;
+      padding:13px 14px;
+      border-radius:18px;
+      margin:10px 0;
+      cursor:pointer;
+      transition:.18s;
+    }
+
+    .choice:hover{border-color:#ffb3c1; transform:translateY(-1px)}
+    .choice input{margin-top:5px; accent-color:var(--red)}
+
+    .actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+      margin-top:22px;
+    }
+
+    button{
+      border:0;
+      border-radius:18px;
+      padding:13px 18px;
+      font:inherit;
+      font-weight:700;
+      cursor:pointer;
+      transition:.2s;
+    }
+
+    .btn-primary{
+      color:#fff;
+      background:linear-gradient(135deg, var(--red), var(--red-dark));
+      box-shadow:0 12px 24px rgba(217,50,73,.24);
+    }
+
+    .btn-secondary{
+      color:var(--red-dark);
+      background:var(--pink);
+      border:1px solid #ffd6df;
+    }
+
+    button:hover{transform:translateY(-2px)}
+
+    .summary-title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:700;
+      margin:0 0 14px;
+      color:var(--red-dark);
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:#fff7e1;
+      color:#8a5a00;
+      border:1px solid #ffe0a3;
+      border-radius:999px;
+      padding:7px 12px;
+      font-size:.86rem;
+      font-weight:600;
+      margin-bottom:12px;
+    }
+
+    .side-list{
+      list-style:none;
+      padding:0;
+      margin:0;
+      color:var(--muted);
+      line-height:1.85;
+      font-size:.94rem;
+    }
+
+    .score-box{
+      display:none;
+      margin-top:18px;
+      border-radius:22px;
+      padding:18px;
+      background:linear-gradient(135deg, #f1fff7, #ffffff);
+      border:1px solid #ccefdc;
+    }
+
+    .score-number{
+      font-size:2.2rem;
+      font-weight:800;
+      color:var(--green);
+      line-height:1;
+    }
+
+    .db-note{
+      margin-top:16px;
+      padding:14px;
+      border-radius:18px;
+      background:#f8f9ff;
+      border:1px solid #e4e7ff;
+      color:#5b5f7a;
+      font-size:.88rem;
+      line-height:1.7;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:22px;
+      transform:translateX(-50%) translateY(calc(100% + 60px));
+      opacity:0;
+      pointer-events:none;
+      background:#25212a;
+      color:#fff;
+      padding:13px 18px;
+      border-radius:16px;
+      box-shadow:0 14px 30px rgba(0,0,0,.18);
+      transition:.25s;
+      z-index:20;
+      max-width:92vw;
+      text-align:center;
+    }
+    
+    .toast.show{
+      transform:translateX(-50%) translateY(0);
+      opacity:1;
+    }
+
+    footer{
+      text-align:center;
+      color:var(--muted);
+      padding:26px;
+      font-size:.9rem;
+    }
+
+    @media (max-width:900px){
+      .hero, .quiz-shell{grid-template-columns:1fr}
+      .side-card{position:static}
+      .student-grid{grid-template-columns:1fr}
+      .nav{align-items:flex-start; flex-direction:column}
+      .nav-links a{margin:0 14px 0 0}
+      .panel,.hero-card{padding:22px}
+    }
+  </style>
+</head>
+<body>
+
+  <main>
+    <section class="hero">
+      <div class="hero-card">
+        <span class="eyebrow">🧩 แบบทดสอบบทที่ 1</span>
+        <h1>Decomposition</h1>
+        <p class="lead">
+          แบบทดสอบนี้ช่วยตรวจสอบความเข้าใจเรื่องการแยกปัญหาออกเป็นส่วนย่อย ๆ
+          ก่อนนำไปวางแผนเขียนโปรแกรมควบคุมหุ่นยนต์ด้วยภาษา Python
+        </p>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <img src="https://github.com/Kawitsaa/pybot-lab/blob/main/test.png?raw=true" alt="PyBot กำลังทำแบบทดสอบ" />
+      </div>
+    </section>
+
+    <section class="quiz-shell">
+      <form id="quizForm" class="panel" autocomplete="off">
+        <input type="hidden" name="lesson_id" value="1">
+        <input type="hidden" name="lesson_title" value="Decomposition">
+        <input type="hidden" name="total_items" value="10">
+
+        <div class="student-grid">
+          <div>
+            <label class="field-label" for="studentName">ชื่อ-นามสกุล</label>
+            <input id="studentName" name="student_name" type="text" placeholder="เช่น ด.ญ.ตัวอย่าง เรียนดี" required>
+          </div>
+          <div>
+            <label class="field-label" for="studentNo">เลขที่</label>
+            <input id="studentNo" name="student_no" type="text" placeholder="เช่น 12" required>
+          </div>
+          <div>
+            <label class="field-label" for="classroom">ห้องเรียน</label>
+            <select id="classroom" name="classroom" required>
+              <option value="">เลือกห้องเรียน</option>
+              <option value="ม.5/1">ม.5/1</option>
+              <option value="ม.5/2">ม.5/2</option>
+              <option value="ม.5/3">ม.5/3</option>
+              <option value="ม.5/4">ม.5/4</option>
+              <option value="ม.5/5">ม.5/5</option>
+              <option value="ม.5/6">ม.5/6</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="progress-wrap" aria-live="polite">
+          <div class="progress-text"><span>ความคืบหน้า</span><span id="progressLabel">0/10 ข้อ</span></div>
+          <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+        </div>
+
+        <div id="questions"></div>
+
+        <div class="actions">
+          <button class="btn-secondary" type="button" id="resetBtn">ล้างคำตอบ</button>
+          <button class="btn-primary" type="submit">ส่งแบบทดสอบ</button>
+        </div>
+      </form>
+
+        <div id="scoreBox" class="score-box">
+          <div>ผลคะแนนของคุณ</div>
+          <div class="score-number"><span id="scoreText">0</span>/6</div>
+          <p id="feedbackText"></p>
+        </div>
+
+      </aside>
+    </section>
+  </main>
+
+  <footer>© PyBot Lab • 2026</footer>
+  <div id="toast" class="toast"></div>
+
+  <script>
+    // เมื่อพร้อมเชื่อมฐานข้อมูล ให้สร้างไฟล์ PHP สำหรับรับ JSON แล้วบันทึกลง MySQL
+    // ตัวอย่าง: const API_ENDPOINT = "api/save_quiz.php";
+    const API_ENDPOINT = "";
+
+    const quizItems = [
+      {
+        id: "q1",
+        question: "Pattern Recognition ในบทเรียนเน้นในเรื่องของอะไร",
+        choices: [
+          "การเลือกเฉพาะข้อมูลสำคัญ",
+          "การสังเกตรูปแบบที่ซ้ำ",
+          "การแยกปัญหาเป็นช่วง",
+          "การนำโค้ดไปใช้กับของจริง"
+        ],
+        answer: 2
+      },
+      {
+        id: "q2",
+        question: "เหตุผลสำคัญที่ไม่ควรพิมพ์คำสั่งซ้ำหลายบรรทัดคือข้อใด",
+        choices: [
+          "ทำให้โปรแกรมรันไม่ได้",
+          "โค้ดยาว เสี่ยงผิดพลาด และแก้ยากเมื่อเปลี่ยนค่า",
+          "ทำให้หุ่นยนต์ช้าลงเสมอ",
+          "ทำให้ต้อง import library เพิ่ม"
+        ],
+        answer: 2
+      },
+      {
+        id: "q3",
+        question: "หากต้อง เดิน 1 ก้าว และเลี้ยวขวา 90° ซ้ำ 4 ครั้ง วิธีที่เหมาะกับแนวคิด Pattern Recognition คือข้อใด",
+        choices: [
+          "การเขียน 8 บรรทัดซ้ำ ๆ",
+          "การใช้การทำซ้ำ (loop) 4 รอบ",
+          "การเขียน “เดินไปเรื่อย ๆ",
+          "การเพิ่มคำสั่งสุ่ม"
+        ],
+        answer: 2
+      },
+      {
+        id: "q4",
+        question: "ตัวอย่างโครงสร้างซ้ำคือข้อใด",
+        choices: [
+          "การเดิน-เลี้ยว ที่ทำหลายครั้ง",
+          "การวาดรูปบนฉาก",
+          "การเปลี่ยนธีมเว็บไซต์",
+          "การเพิ่มเสียงประกอบ"
+        ],
+        answer: 1
+      },
+      {
+        id: "q5",
+        question: "หากต้องเปลี่ยนจากเดิน 1 ก้าวเป็น 2 ก้าว และใช้ loop จะได้ประโยชน์อะไร",
+        choices: [
+          "ต้องแก้หลายจุดกว่าเดิม",
+          "แก้ค่าที่เดียว ไม่ต้องไล่แก้หลายบรรทัด",
+          "ทำให้เลี้ยวกลับทิศเดิม",
+          "ทำให้ไม่ต้องทดสอบ"
+        ],
+        answer: 2
+      },
+      {
+        id: "q6",
+        question: "หากนักเรียนแก้ bug โดยเพิ่มคำสั่งซ้ำ ๆ หลายบรรทัดจนตนเองเริ่มสับสน แนวคิดที่ช่วยได้คือข้อใด",
+        choices: [
+          "Pattern Recognition",
+          "Abstraction",
+          "Algorithm",
+          "Calibration"
+        ],
+        answer: 1
+      },
+      {
+        id: "q7",
+        question: "ถ้าลืมใส่โคลอน ( : ) หลัง for loop จะเกิดอะไรขึ้น",
+        choices: [
+          "loop ไม่สมบูรณ์ และ Error",
+          "ทำให้หุ่นเลี้ยวกลับเอง และ Error",
+          "ทำให้ Step หาย และ Error",
+          "ทำให้โค้ดสั้นลง และ Error"
+        ],
+        answer: 1
+      },
+      {
+        id: "q8",
+        question: "for count in range(4): หมายถึงข้อใด",
+        choices: [
+          "ทำ 3 รอบ",
+          "ทำ 4 รอบ",
+          "ทำ 5 รอบ",
+          "ทำ 40 รอบ"
+        ],
+        answer: 2
+      },
+      {
+        id: "q9",
+        question: "หากต้องการลดโค้ดจาก 12 บรรทัดเหลือ 4 บรรทัด แนวคิดที่ตรงที่สุดคือข้อใด",
+        choices: [
+          "Decomposition",
+          "Pattern Recognition",
+          "Abstraction",
+          "Calibration"
+        ],
+        answer: 2
+      },
+      {
+        id: "q10",
+        question: "ถ้าอยากแก้จาก 4 รอบเป็น 6 รอบ โดยใช้ loop ต้องแก้อะไร",
+        choices: [
+          "พิมพ์เพิ่ม 2 บรรทัดซ้ำ ๆ",
+          "เปลี่ยนค่าจำนวนรอบ",
+          "เปลี่ยนให้เดินตามสีสนามที่เหมือนกัน",
+          "เปลี่ยนชื่อฟังก์ชันที่ใช้"
+        ],
+        answer: 2
+      }
+    ];
+
+    const questionsEl = document.getElementById("questions");
+    const form = document.getElementById("quizForm");
+    const progressFill = document.getElementById("progressFill");
+    const progressLabel = document.getElementById("progressLabel");
+    const scoreBox = document.getElementById("scoreBox");
+    const scoreText = document.getElementById("scoreText");
+    const feedbackText = document.getElementById("feedbackText");
+    const resetBtn = document.getElementById("resetBtn");
+    const toast = document.getElementById("toast");
+
+    function renderQuestions(){
+      questionsEl.innerHTML = quizItems.map((item, index) => `
+        <article class="question">
+          <div class="q-head">
+            <div class="q-no">${index + 1}</div>
+            <div class="q-title">${item.question}</div>
+          </div>
+          ${item.choices.map((choice, choiceIndex) => `
+            <label class="choice">
+              <input type="radio" name="${item.id}" value="${choiceIndex}" required>
+              <span>${choice}</span>
+            </label>
+          `).join("")}
+        </article>
+      `).join("");
+    }
+
+    function updateProgress(){
+      const answered = quizItems.filter(item => form.querySelector(`input[name="${item.id}"]:checked`)).length;
+      const percent = (answered / quizItems.length) * 100;
+      progressFill.style.width = `${percent}%`;
+      progressLabel.textContent = `${answered}/${quizItems.length} ข้อ`;
+    }
+
+    function calculateScore(){
+      let score = 0;
+      const answers = quizItems.map(item => {
+        const selected = form.querySelector(`input[name="${item.id}"]:checked`);
+        const selectedValue = selected ? Number(selected.value) : null;
+        const isCorrect = selectedValue === item.answer;
+        if(isCorrect) score++;
+        return {
+          question_id: item.id,
+          selected_choice: selectedValue,
+          correct_choice: item.answer,
+          is_correct: isCorrect ? 1 : 0
+        };
+      });
+      return { score, answers };
+    }
+
+    function getFeedback(score){
+      if(score === quizItems.length) return "ยอดเยี่ยมมาก! เข้าใจการแยกปัญหาได้ครบถ้วน";
+      if(score >= 4) return "ทำได้ดีแล้ว ลองทบทวนข้อที่ยังไม่มั่นใจอีกเล็กน้อย";
+      return "ลองกลับไปทบทวนบทเรียน Decomposition แล้วทำใหม่อีกครั้งนะ";
+    }
+
+    function showToast(message){
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3200);
+    }
+
+    async function submitToDatabase(payload){
+      if(!API_ENDPOINT){
+        console.log("Payload สำหรับส่งไปฐานข้อมูลในอนาคต:", payload);
+        return { demoMode: true };
+      }
+
+      const response = await fetch(API_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if(!response.ok){
+        throw new Error("ไม่สามารถบันทึกข้อมูลได้");
+      }
+      return response.json();
+    }
+
+    form.addEventListener("change", updateProgress);
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const { score, answers } = calculateScore();
+
+      const payload = {
+        lesson_id: 1,
+        lesson_title: "Decomposition",
+        student_name: document.getElementById("studentName").value.trim(),
+        student_no: document.getElementById("studentNo").value.trim(),
+        classroom: document.getElementById("classroom").value,
+        total_items: quizItems.length,
+        score: score,
+        answers: answers,
+        submitted_at: new Date().toISOString()
+      };
+
+      try{
+        await submitToDatabase(payload);
+        scoreText.textContent = score;
+        feedbackText.textContent = getFeedback(score);
+        scoreBox.style.display = "block";
+        showToast(API_ENDPOINT ? "บันทึกคะแนนเรียบร้อยแล้ว" : "แสดงผลคะแนนแล้ว และจำลองข้อมูลสำหรับส่งฐานข้อมูลไว้ใน Console");
+      }catch(error){
+        showToast("เกิดข้อผิดพลาดในการบันทึกข้อมูล กรุณาลองใหม่อีกครั้ง");
+        console.error(error);
+      }
+    });
+
+    resetBtn.addEventListener("click", () => {
+      form.reset();
+      scoreBox.style.display = "none";
+      updateProgress();
+      showToast("ล้างคำตอบเรียบร้อยแล้ว");
+    });
+
+    renderQuestions();
+    updateProgress();
+  </script>
+</body>
+</html>
