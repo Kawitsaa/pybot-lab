@@ -416,6 +416,8 @@
       .panel,.hero-card{padding:22px}
     }
   </style>
+</head>
+<body>
 
   <main>
     <section class="hero">
@@ -436,7 +438,7 @@
       <form id="quizForm" class="panel" autocomplete="off">
         <input type="hidden" name="lesson_id" value="1">
         <input type="hidden" name="lesson_title" value="Decomposition">
-        <input type="hidden" name="total_items" value="6">
+        <input type="hidden" name="total_items" value="10">
 
         <div class="student-grid">
           <div>
@@ -461,6 +463,10 @@
           </div>
         </div>
 
+        <div class="progress-wrap" aria-live="polite">
+          <div class="progress-text"><span>ความคืบหน้า</span><span id="progressLabel">0/10 ข้อ</span></div>
+          <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+        </div>
 
         <div id="questions"></div>
 
@@ -472,7 +478,7 @@
 
       <aside class="side-card">
         <p class="summary-title">📌 คำแนะนำก่อนทำแบบทดสอบ</p>
-        <span class="pill">คะแนนเต็ม 6 คะแนน</span>
+        <span class="pill">คะแนนเต็ม 10 คะแนน</span>
         <ul class="side-list">
           <li>• อ่านโจทย์ให้ครบก่อนเลือกคำตอบ</li>
           <li>• เลือกคำตอบที่ถูกต้องที่สุดเพียง 1 ข้อ</li>
@@ -569,40 +575,40 @@
           "เลือกคำตอบแบบสุ่ม"
         ],
         answer: 0
-      }
+      },
       {
         id: "q7",
-        question: "เมื่อแยกปัญหาแล้ว ขั้นตอนต่อไปที่เหมาะสมคือข้อใด",
+        question: "ข้อใดเป็นประโยชน์ของการแยกปัญหาในการเขียนโปรแกรมหุ่นยนต์",
         choices: [
-          "นำปัญหาย่อยไปวางลำดับขั้นตอนหรือออกแบบอัลกอริทึม",
-          "หยุดทำงานทันที",
-          "ลบข้อมูลโจทย์ทั้งหมด",
-          "เลือกคำตอบแบบสุ่ม"
+          "ทำให้ตรวจสอบข้อผิดพลาดได้ง่ายขึ้น",
+          "ทำให้ไม่ต้องทดสอบโปรแกรม",
+          "ทำให้หุ่นยนต์ทำงานเองโดยไม่ต้องเขียนคำสั่ง",
+          "ทำให้โปรแกรมไม่มีเงื่อนไขใด ๆ"
         ],
         answer: 0
-      }
+      },
       {
         id: "q8",
-        question: "เมื่อแยกปัญหาแล้ว ขั้นตอนต่อไปที่เหมาะสมคือข้อใด",
+        question: "สถานการณ์ใดแสดงการใช้ Decomposition ได้ชัดเจนที่สุด",
         choices: [
-          "นำปัญหาย่อยไปวางลำดับขั้นตอนหรือออกแบบอัลกอริทึม",
-          "หยุดทำงานทันที",
-          "ลบข้อมูลโจทย์ทั้งหมด",
-          "เลือกคำตอบแบบสุ่ม"
+          "นักเรียนกดปุ่ม Run โดยไม่อ่านโจทย์",
+          "นักเรียนแบ่งภารกิจหุ่นยนต์เป็น เดินหน้า เลี้ยว ตรวจจับเส้น และหยุด",
+          "นักเรียนเปลี่ยนชื่อไฟล์หลายครั้ง",
+          "นักเรียนเลือกพื้นหลังของเว็บไซต์"
         ],
-        answer: 0
-      }
+        answer: 1
+      },
       {
         id: "q9",
-        question: "เมื่อแยกปัญหาแล้ว ขั้นตอนต่อไปที่เหมาะสมคือข้อใด",
+        question: "หากภารกิจคือให้หุ่นยนต์เดินไปหยิบวัตถุและกลับจุดเริ่มต้น ปัญหาย่อยใดควรมีอยู่ในแผน",
         choices: [
-          "นำปัญหาย่อยไปวางลำดับขั้นตอนหรือออกแบบอัลกอริทึม",
-          "หยุดทำงานทันที",
-          "ลบข้อมูลโจทย์ทั้งหมด",
-          "เลือกคำตอบแบบสุ่ม"
+          "เปิดเพลงประกอบก่อนเริ่มงาน",
+          "กำหนดเส้นทาง ตรวจจับวัตถุ จับวัตถุ และเดินกลับ",
+          "เปลี่ยนชื่อหุ่นยนต์ทุกครั้งก่อนวิ่ง",
+          "ปิดเซนเซอร์ทั้งหมดเพื่อไม่ให้รบกวน"
         ],
-        answer: 0
-      }
+        answer: 1
+      },
       {
         id: "q10",
         question: "เมื่อแยกปัญหาแล้ว ขั้นตอนต่อไปที่เหมาะสมคือข้อใด",
@@ -615,11 +621,6 @@
         answer: 0
       }
     ];
-
-        <div class="progress-wrap" aria-live="polite">
-          <div class="progress-text"><span>ความคืบหน้า</span><span id="progressLabel">0/10 ข้อ</span></div>
-          <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
-        </div>
 
     const questionsEl = document.getElementById("questions");
     const form = document.getElementById("quizForm");
