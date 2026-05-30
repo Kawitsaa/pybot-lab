@@ -473,11 +473,6 @@
           </div>
         </div>
 
-        <div class="progress-wrap" aria-live="polite">
-          <div class="progress-text"><span>ความคืบหน้า</span><span id="progressLabel">0/6 ข้อ</span></div>
-          <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
-        </div>
-
         <div id="questions"></div>
 
         <div class="actions">
@@ -578,6 +573,11 @@
         answer: 0
       }
     ];
+
+    <div class="progress-wrap" aria-live="polite">
+          <div class="progress-text"><span>ความคืบหน้า</span><span id="progressLabel">0/6 ข้อ</span></div>
+          <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+        </div>
 
     const questionsEl = document.getElementById("questions");
     const form = document.getElementById("quizForm");
